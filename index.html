@@ -1,23 +1,23 @@
-<h1>Робота з GitHub</h1>
 <!doctype html>
 
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" media="screen">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> -->
-        <!-- <link rel="stylesheet/less" type="text/css" href="less/less.style1.less">  -->
+        <link rel="stylesheet/less" type="text/css" href="css/css.style1.css">
         
         
         <title>Front - end</title>
-  </head>
-  <body>
-
+    </head>
+    <body>
+        <h1>Робота з GitHub</h1>
+        
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
@@ -41,6 +41,7 @@
             var link = document.createElement("link");
             link.setAttribute("rel", "stylesheet");
             link.setAttribute("href", getUrl(Default_theme));
+            link.setAttribute("class", "changeable");
             document.head.appendChild(link);
         }
     
@@ -52,7 +53,7 @@
     
         function changeTheme() {
             document.head
-                .querySelector("link")
+                .querySelector(".changeable")
                 .setAttribute("href", getUrl(getThemeNumber()));
         }
     
