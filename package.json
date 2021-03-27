@@ -10,8 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.5.1",
+    "@types/jquery": "^3.5.5",
+    "jquery": "^3.6.0",
     "less": "^4.1.1",
     "less-plugin-clean-css": "^1.5.1"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.0.8"
   }
 }
