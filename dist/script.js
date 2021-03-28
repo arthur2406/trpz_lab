@@ -13,7 +13,7 @@ class Product {
         let divprice = document.createElement("div");
         divprice.setAttribute("class", "col-6 p-0 text-primary font-weight-bold");
         divprice.innerHTML = this.price + " грн.";
-        let divavail = document.createElement("div");
+        let divavail = this.availabilityElem = document.createElement("div");
         if (this.IsAvailable()) {
             divavail.setAttribute("class", "col-6 p-0 text-right text-success");
             divavail.innerHTML = "Есть в наличии";
@@ -34,11 +34,10 @@ class Product {
         p.innerHTML = this.description;
         let a = document.createElement("a");
         a.setAttribute("id", this.id.toString());
-        a.setAttribute("data-instock", this.inStock.toString());
         a.setAttribute("href", "#buyModal");
         a.setAttribute("class", "btn btn-primary");
         a.setAttribute("data-toggle", "modal");
-        a.setAttribute("onclick", "WantBuy(this.id, this.dataset.instock)");
+        a.setAttribute("onclick", "WantBuy(this.id)");
         a.innerHTML = "Купить";
         let divfu = document.createElement("div");
         divfu.setAttribute("class", "card-footer");
@@ -64,6 +63,16 @@ class Product {
     }
     IsAvailable() {
         return (this.inStock > 0) ? true : false;
+    }
+    checkIsInStock() {
+        if (this.IsAvailable()) {
+            this.availabilityElem.setAttribute("class", "col-6 p-0 text-right text-success");
+            this.availabilityElem.innerHTML = "Есть в наличии";
+        }
+        else {
+            this.availabilityElem.setAttribute("class", "col-6 p-0 text-right text-danger");
+            this.availabilityElem.innerHTML = "Нет в наличии";
+        }
     }
 }
 var Color;
@@ -316,10 +325,11 @@ class Basket {
 function myByBtn(val) {
     if (basket.Add(val))
         $('#buyModal').modal('hide');
+    productList[val].checkIsInStock();
 }
-function WantBuy(val, inStockCount) {
+function WantBuy(val) {
     document.getElementById('modlalBtn').setAttribute("value", val);
-    document.getElementById('inStockCount').innerText = 'В наличии: ' + inStockCount;
+    document.getElementById('inStockCount').innerText = 'В наличии: ' + productList[val].inStock;
 }
 let basket = new Basket();
 let productList = [

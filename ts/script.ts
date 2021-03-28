@@ -1,6 +1,8 @@
 
 
 class Product {
+    protected availabilityElem: HTMLDivElement
+
     constructor(protected id: number, public name: string, public price: number, public description: string, public inStock: number) {
         
     }
@@ -15,7 +17,7 @@ class Product {
         divprice.setAttribute("class", "col-6 p-0 text-primary font-weight-bold");
         divprice.innerHTML = this.price + " грн.";
 
-        let divavail = document.createElement("div");
+        let divavail = this.availabilityElem = document.createElement("div");
         if (this.IsAvailable()) {
             divavail.setAttribute("class", "col-6 p-0 text-right text-success");
             divavail.innerHTML = "Есть в наличии";
@@ -40,11 +42,10 @@ class Product {
 
         let a = document.createElement("a");
         a.setAttribute("id", this.id.toString());
-        a.setAttribute("data-instock", this.inStock.toString());
         a.setAttribute("href", "#buyModal");
         a.setAttribute("class", "btn btn-primary");
         a.setAttribute("data-toggle", "modal");
-        a.setAttribute("onclick", "WantBuy(this.id, this.dataset.instock)");
+        a.setAttribute("onclick", "WantBuy(this.id)");
         a.innerHTML = "Купить";
 
         let divfu = document.createElement("div");
@@ -79,6 +80,17 @@ class Product {
     //Определение есть ли товар в наличии
 	IsAvailable(): boolean {
         return (this.inStock > 0) ? true : false;
+    }
+
+    checkIsInStock() {
+        if (this.IsAvailable()) {
+            this.availabilityElem.setAttribute("class", "col-6 p-0 text-right text-success");
+            this.availabilityElem.innerHTML = "Есть в наличии";
+        }
+        else {
+            this.availabilityElem.setAttribute("class", "col-6 p-0 text-right text-danger");
+            this.availabilityElem.innerHTML = "Нет в наличии";
+        }
     }
 }
 
@@ -360,10 +372,6 @@ class Basket {
                 total += productList[key].price * val.quantity;
             }
 
-            // for (let i = 0; i < this.list.length; i++) {
-            //     message += productList[this.list[i].id].name + " - " + this.list[i].quantity + "<br>";
-            //     total += productList[this.list[i].id].price * this.list[i].quantity;
-            // }
             message += "<br><br>На общую сумму " + total + " грн.";
 
             document.getElementById('myBasket').innerHTML = message;
@@ -375,12 +383,14 @@ class Basket {
 //Действие на кнопке "добавить в корзину"
 function myByBtn(val: any) {
     if (basket.Add(val)) $('#buyModal').modal('hide');
+    productList[val].checkIsInStock();
 }
 
 //Действие на кнопке "купить"
-function WantBuy(val: any, inStockCount: any) {
+function WantBuy(val: any) {
     document.getElementById('modlalBtn').setAttribute("value", val);
-    document.getElementById('inStockCount').innerText = 'В наличии: ' + inStockCount; 
+    
+    document.getElementById('inStockCount').innerText = 'В наличии: ' + productList[val].inStock; 
 }
 
 //Инициализация корзины
