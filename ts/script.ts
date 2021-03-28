@@ -40,10 +40,11 @@ class Product {
 
         let a = document.createElement("a");
         a.setAttribute("id", this.id.toString());
+        a.setAttribute("data-instock", this.inStock.toString());
         a.setAttribute("href", "#buyModal");
         a.setAttribute("class", "btn btn-primary");
         a.setAttribute("data-toggle", "modal");
-        a.setAttribute("onclick", "WantBuy(this.id)");
+        a.setAttribute("onclick", "WantBuy(this.id, this.dataset.instock)");
         a.innerHTML = "Купить";
 
         let divfu = document.createElement("div");
@@ -185,8 +186,8 @@ class Headphones extends Product {
 }
 
 
-class Pillow extends Product {
-    constructor(protected id: number, public name: string, public price: number, public description: string, public inStock: number) {
+class Conditioner extends Product {
+    constructor(protected id: number, public name: string, public price: number, public description: string, public inStock: number, public isForWall?: boolean ) {
         super(id, name, price, description, inStock);
         this.Init();
     }
@@ -195,14 +196,36 @@ class Pillow extends Product {
     Init() {
         let obj = super.Init();
         
+        if (this.isForWall) {
+            let p = document.createElement("p");
+            p.setAttribute("class", "card-text text-info m-0");
+            p.innerHTML = "Настенный";
+            obj.firstChild.firstChild.insertBefore(p, obj.firstChild.firstChild.childNodes[2]);
+        }
+
+
+        if (document.getElementById('isForWall') == null && this.isForWall != null && this.isForWall) {
+            let inp = document.createElement("input");
+            inp.setAttribute("type", "checkbox");
+            inp.setAttribute("id", "isForWall");
+            inp.setAttribute("onclick", "CheckIsForWall(this.checked)");
+
+            let lab = document.createElement("p");
+            lab.appendChild(inp);
+            lab.innerHTML += "Только настенные<br>";
+
+            let div = document.getElementById('myTools');
+            div.appendChild(lab);
+        }
+
         this.Embed(obj);
     }
 
 }
 
 
-class Phone extends Product {
-    constructor(protected id: number, public name: string, public price: number, public description: string, public inStock: number) {
+class Tv extends Product {
+    constructor(protected id: number, public name: string, public price: number, public description: string, public inStock: number, public isSmart?: boolean) {
         super(id, name, price, description, inStock);
         this.Init();
     }
@@ -210,7 +233,29 @@ class Phone extends Product {
     
     Init() {
         let obj = super.Init();
-        
+
+        if (this.isSmart) {
+            let p = document.createElement("p");
+            p.setAttribute("class", "card-text text-info m-0");
+            p.innerHTML = "Есть SmartTV";
+            obj.firstChild.firstChild.insertBefore(p, obj.firstChild.firstChild.childNodes[2]);
+        }
+
+
+        if (document.getElementById('isSmart') == null && this.isSmart != null && this.isSmart) {
+            let inp = document.createElement("input");
+            inp.setAttribute("type", "checkbox");
+            inp.setAttribute("id", "isSmart");
+            inp.setAttribute("onclick", "CheckIsSmart(this.checked)");
+
+            let lab = document.createElement("p");
+            lab.appendChild(inp);
+            lab.innerHTML += "Только с SmartTV<br>";
+
+            let div = document.getElementById('myTools');
+            div.appendChild(lab);
+        }
+
         this.Embed(obj);
     }
 }
@@ -221,6 +266,32 @@ function CheckWireless(flag: boolean) {
     if (flag) {
         for (let i = 0; i < this.productList.length; i++)
             if (productList[i] instanceof Headphones && (<Headphones>productList[i]).isWireless) (<Headphones>productList[i]).Init();
+    }
+    else {
+        for (let i = 0; i < this.productList.length; i++)
+            productList[i].Init();
+    }
+}
+
+//Группировка по настенным кондерам.
+function CheckIsForWall(flag: boolean) {
+    document.getElementById('rowts').innerHTML = "";
+    if (flag) {
+        for (let i = 0; i < this.productList.length; i++)
+            if (productList[i] instanceof Conditioner && (<Conditioner>productList[i]).isForWall) (<Conditioner>productList[i]).Init();
+    }
+    else {
+        for (let i = 0; i < this.productList.length; i++)
+            productList[i].Init();
+    }
+}
+
+//Группировка по умным телекам.
+function CheckIsSmart(flag: boolean) {
+    document.getElementById('rowts').innerHTML = "";
+    if (flag) {
+        for (let i = 0; i < this.productList.length; i++)
+            if (productList[i] instanceof Tv && (<Tv>productList[i]).isSmart) (<Tv>productList[i]).Init();
     }
     else {
         for (let i = 0; i < this.productList.length; i++)
@@ -247,7 +318,7 @@ interface BasketRecord {
 }
 
 class Basket {
-    private list: BasketRecord[] = []; //Список товаров в корзине
+    private list: Map<number, BasketRecord> = new Map(); //Список товаров в корзине
 
     constructor() {
         
@@ -266,7 +337,13 @@ class Basket {
         else {
             document.getElementById('modlalMessag').innerHTML = "";
             productList[val].inStock -= num;
-            this.list[this.list.length] = { id: val, quantity: num };
+            let item = this.list.get(val); 
+            if (item) {
+                item.quantity += num;
+            } else {
+                this.list.set(val, { id: val, quantity: num });
+            }
+
             this.CalculateBasket();
             return true;
         }
@@ -274,14 +351,19 @@ class Basket {
 
     //Пересчитать товары в корзине
     CalculateBasket() {
-        if (this.list.length > 0) {
+        if (this.list.size > 0) {
             let id;
             let total: number = 0;
-            let message: string = "В даннвй момент в корзине:<br>";
-            for (let i = 0; i < this.list.length; i++) {
-                message += productList[this.list[i].id].name + " - " + this.list[i].quantity + "<br>";
-                total += productList[this.list[i].id].price * this.list[i].quantity;
+            let message: string = "В данный момент в корзине:<br>";
+            for (const [key, val] of this.list.entries()) {
+                message += productList[key].name + " - " + val.quantity + "<br>";
+                total += productList[key].price * val.quantity;
             }
+
+            // for (let i = 0; i < this.list.length; i++) {
+            //     message += productList[this.list[i].id].name + " - " + this.list[i].quantity + "<br>";
+            //     total += productList[this.list[i].id].price * this.list[i].quantity;
+            // }
             message += "<br><br>На общую сумму " + total + " грн.";
 
             document.getElementById('myBasket').innerHTML = message;
@@ -296,8 +378,9 @@ function myByBtn(val: any) {
 }
 
 //Действие на кнопке "купить"
-function WantBuy(val: any) {
+function WantBuy(val: any, inStockCount: any) {
     document.getElementById('modlalBtn').setAttribute("value", val);
+    document.getElementById('inStockCount').innerText = 'В наличии: ' + inStockCount; 
 }
 
 //Инициализация корзины
@@ -306,7 +389,7 @@ let basket: Basket = new Basket();
 
 //Базовый класс
 let productList: Product[] = [
-    //new Headphones(0, "Наушники фирмы1", 816, "Прекрасные наушники! Сама английская королева слушает жесткий металл через такие же!", 4, true),
+    new Headphones(0, "Наушники фирмы1", 816, "Прекрасные наушники! Сама английская королева слушает жесткий металл через такие же!", 4, true),
     new FeltBoots(1, "Валенки2", 91.2, "Хороший выбор! В них тепло, хорошо. Обувь многосезонная - лето, осень, зима, весна.", 6,
         [{ dimension: 44, color: Color.Black, quantity: 2 },
             { dimension: 43, color: Color.Black, quantity: 3 },
@@ -326,6 +409,11 @@ let productList: Product[] = [
         [{ dimension: 45, color: Color.Pink, quantity: 1 },
             { dimension: 43, color: Color.Pink, quantity: 1 }
         ]),
-    new Balalaika(8, "Балалайка2", 217, "Обычная балалайка белорусской фирмы Змрочныя мелодыі.", 1)];
+    new Balalaika(8, "Балалайка2", 217, "Обычная балалайка белорусской фирмы Змрочныя мелодыі.", 1),
+    new Conditioner(9, "Кондиционер1", 500, "Напольный кондиционер.", 1),
+    new Conditioner(10, "Кондиционер2", 650, "Настенный кондиционер.", 1, true),
+    new Tv(11, "Телевизор1", 300, "Телевизор обычный.", 1),
+    new Tv(12, "Телевизор2", 500, "Телевизор крутой.", 1, true)
+];
 
 
