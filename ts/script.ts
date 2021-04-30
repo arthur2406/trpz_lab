@@ -276,11 +276,11 @@ class Tv extends Product {
 function CheckWireless(flag: boolean) {
     document.getElementById('rowts').innerHTML = "";
     if (flag) {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             if (productList[i] instanceof Headphones && (<Headphones>productList[i]).isWireless) (<Headphones>productList[i]).Init();
     }
     else {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             productList[i].Init();
     }
 }
@@ -289,11 +289,11 @@ function CheckWireless(flag: boolean) {
 function CheckIsForWall(flag: boolean) {
     document.getElementById('rowts').innerHTML = "";
     if (flag) {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             if (productList[i] instanceof Conditioner && (<Conditioner>productList[i]).isForWall) (<Conditioner>productList[i]).Init();
     }
     else {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             productList[i].Init();
     }
 }
@@ -302,11 +302,11 @@ function CheckIsForWall(flag: boolean) {
 function CheckIsSmart(flag: boolean) {
     document.getElementById('rowts').innerHTML = "";
     if (flag) {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             if (productList[i] instanceof Tv && (<Tv>productList[i]).isSmart) (<Tv>productList[i]).Init();
     }
     else {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             productList[i].Init();
     }
 }

@@ -232,36 +232,36 @@ class Tv extends Product {
 function CheckWireless(flag) {
     document.getElementById('rowts').innerHTML = "";
     if (flag) {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             if (productList[i] instanceof Headphones && productList[i].isWireless)
                 productList[i].Init();
     }
     else {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             productList[i].Init();
     }
 }
 function CheckIsForWall(flag) {
     document.getElementById('rowts').innerHTML = "";
     if (flag) {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             if (productList[i] instanceof Conditioner && productList[i].isForWall)
                 productList[i].Init();
     }
     else {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             productList[i].Init();
     }
 }
 function CheckIsSmart(flag) {
     document.getElementById('rowts').innerHTML = "";
     if (flag) {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             if (productList[i] instanceof Tv && productList[i].isSmart)
                 productList[i].Init();
     }
     else {
-        for (let i = 0; i < this.productList.length; i++)
+        for (let i = 0; i < productList.length; i++)
             productList[i].Init();
     }
 }
